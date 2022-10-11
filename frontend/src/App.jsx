@@ -7,19 +7,21 @@ function App() {
 	const [posts, setPosts] = useState([]);
 
 
-  useEffect(() => {
-    fetch('http://localhost:3001/posts')
-			.then(res => res.json())
-			.then(data => {
-				setPosts(data.data);
-			});
-  
-  }, [posts])
 
+  const getPostsFromDB = () =>{
+    fetch('http://localhost:3001/posts')
+    .then(res => res.json())
+    .then(data => {
+      setPosts(data.data);
+    });
+  }
+
+  useEffect(() => {
+   getPostsFromDB();
+  }, [])
 
   const addPost = (event) => {
 		const newPost = { post: post };
-
 		fetch('http://localhost:3001/addpost', {
 			method: 'POST',
 			headers: {
@@ -27,7 +29,10 @@ function App() {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(newPost)
-		}).then(res => res.json()).then(body => console.log("Status of adding a post: " + body.status));
+		}).then(res => res.json()).then((body) => {
+      console.log("Status of adding a post: " + body.status)
+      getPostsFromDB();
+    });
 
 		setPost("");
 	};
@@ -36,7 +41,10 @@ function App() {
   const deletePost = (id) => {
 		console.log('...requested to update post ' + id);
 		fetch(`http://localhost:3001/posts/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }})
-			.then(res => res.json()).then(status => console.log("Status of deleting book: " + status.status));
+			.then(res => res.json()).then((status) => {
+        console.log("Status of deleting book: " + status.status)
+        getPostsFromDB();
+    });
 	};
 
 
@@ -51,10 +59,6 @@ function App() {
    let formattedString = `${date[0]} ${date[1]} ${date[2]} - ${time[0]}:${time[1]} ${unit}`;
 
    return formattedString;
-
-
-
-
   }
 
   
