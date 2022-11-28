@@ -32,6 +32,7 @@ db.once("open", function () {
     console.log("Mongo DB Connected successfully");
 });
 
+
 // Schema for Post
 let Schema = mongoose.Schema;
 let PostSchema = new Schema(
